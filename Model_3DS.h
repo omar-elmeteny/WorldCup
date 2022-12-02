@@ -107,10 +107,10 @@ public:
 	// Holds the material info
 	// TODO: add color support for non textured polys
 	struct Material {
-		char name[80];	// The material's name
+		char name[80] = "";	// The material's name
 		GLTexture tex;	// The texture (this is the only outside reference in this class)
-		bool textured;	// whether or not it is textured
-		Color4i color;
+		bool textured = false;	// whether or not it is textured
+		Color4i color = { 0, 0, 0, 0 };
 	};
 
 	// Every chunk in the 3ds file starts with this struct

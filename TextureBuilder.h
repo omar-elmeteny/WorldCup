@@ -12,6 +12,11 @@ void loadPPM(GLuint *textureID, char *strFileName, int width, int height, int wr
 	fopen_s(&pFile, strFileName, "r");
 	if (pFile) {
 		data = (BYTE*)malloc(width * height * 3);
+		if (!data) {
+			MessageBoxA(NULL, "Texture file not found!", "Error!", MB_OK);
+			exit(EXIT_FAILURE);
+			return;
+		}
 		fread(data, 1, width * height * 3, pFile);
 		fclose(pFile);
 	} else {
@@ -24,8 +29,8 @@ void loadPPM(GLuint *textureID, char *strFileName, int width, int height, int wr
 	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap ? GL_REPEAT : GL_CLAMP);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap ? GL_REPEAT : GL_CLAMP);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (GLfloat)(wrap ? GL_REPEAT : GL_CLAMP));
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (GLfloat)(wrap ? GL_REPEAT : GL_CLAMP));
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
 	free(data);

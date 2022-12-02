@@ -47,40 +47,50 @@
 
 GLTexture::GLTexture()
 {
-
+	texturename = nullptr;
+	height = 0;
+	width = 0;
 }
 
 GLTexture::~GLTexture()
 {
-
 }
 
 void GLTexture::Load(char *name)
 {
 	// make the texture name all lower case
-	texturename = _strlwr(_strdup(name));
+	texturename = name;
+	char* tempName = _strdup(name);
 
+	_strlwr_s(tempName, strlen(name));
+
+	char* context = NULL;
 	// strip "'s
-	if (strstr(texturename, "\""))
-		texturename = strtok(texturename, "\"");
+	if (strstr(tempName, "\""))
+		tempName = strtok_s(texturename, "\"", &context);
 
 	// check the file extension to see what type of texture
-	if(strstr(texturename, ".bmp"))	
-		LoadBMP(texturename);
+	if(strstr(tempName, ".bmp"))
+		LoadBMP(tempName);
 	if(strstr(texturename, ".tga"))	
-		LoadTGA(texturename);
+		LoadTGA(tempName);
+
+	free(tempName);
 }
 
 void GLTexture::LoadFromResource(char *name)
 {
 	// make the texture name all lower case
-	texturename = _strlwr(_strdup(name));
+	texturename = name;
+	char* tempName = _strdup(name);
+	_strlwr_s(tempName, strlen(name));
 
 	// check the file extension to see what type of texture
-	if(strstr(texturename, ".bmp"))
+	if(strstr(tempName, ".bmp"))
 		LoadBMPResource(name);
-	if(strstr(texturename, ".tga"))	
+	if(strstr(tempName, ".tga"))
 		LoadTGAResource(name);
+	free(tempName);
 }
 
 void GLTexture::Use()
@@ -143,7 +153,8 @@ void GLTexture::LoadTGA(char *name)
 	GLubyte		*imageData;									// Image data (up to 32 Bits)
 	GLuint		bpp;										// Image color depth in bits per pixel.
 
-	FILE *file = fopen(name, "rb");							// Open the TGA file
+	FILE* file = NULL;
+	errno_t err = fopen_s(&file, name, "rb");							// Open the TGA file
 
 	// Load the file and perform checks
 	if(file == NULL ||														// Does file exist?
@@ -184,8 +195,10 @@ void GLTexture::LoadTGA(char *name)
 	if(imageData == NULL ||									// Does the memory storage exist?
 	   fread(imageData, 1, imageSize, file) != imageSize)	// Does the image size match the memory reserved?
 	{
-		if(imageData != NULL)								// Was the image data loaded
-			free(imageData);								// If so, then release the image data
+		if (imageData != NULL) {							// Was the image data loaded
+			delete[] imageData;								// If so, then release the image data
+			imageData = nullptr;
+		}
 
 		fclose(file);										// Close the file
 		return;
@@ -220,7 +233,7 @@ void GLTexture::LoadTGA(char *name)
 	gluBuild2DMipmaps(GL_TEXTURE_2D, type, width, height, type, GL_UNSIGNED_BYTE, imageData);
 
 	// Cleanup
-	free(imageData);
+	delete[] imageData;
 }
 
 
@@ -369,7 +382,7 @@ void GLTexture::LoadTGAResource(char *name)
 	gluBuild2DMipmaps(GL_TEXTURE_2D, type, width, height, type, GL_UNSIGNED_BYTE, imageData);
 
 	// Cleanup
-	free(imageData);
+	delete[] imageData;
 	free(buffer);
 	free(top);
 }

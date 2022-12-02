@@ -48,7 +48,7 @@ class GLTexture
 {
 public:
 	char *texturename;								// The textures name
-	unsigned int texture[1];						// OpenGL's number for the texture
+	unsigned int texture[1] = { 0 };          		// OpenGL's number for the texture
 	int width;										// Texture's width
 	int height;										// Texture's height
 	void Use();										// Binds the texture for use

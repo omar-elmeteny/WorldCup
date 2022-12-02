@@ -19,7 +19,11 @@ class Vector
 {
 public:
 	GLdouble x, y, z;
-	Vector() {}
+	Vector() {
+		x = 0;
+		y = 0;
+		z = 0;
+	}
 	Vector(GLdouble _x, GLdouble _y, GLdouble _z) : x(_x), y(_y), z(_z) {}
 	//================================================================================================//
 	// Operator Overloading; In C++ you can override the behavior of operators for you class objects. //
