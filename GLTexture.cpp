@@ -62,7 +62,7 @@ void GLTexture::Load(char *name)
 	texturename = name;
 	char* tempName = _strdup(name);
 
-	_strlwr_s(tempName, strlen(name));
+	_strlwr_s(tempName, strlen(name) + 1);
 
 	char* context = NULL;
 	// strip "'s
@@ -83,7 +83,7 @@ void GLTexture::LoadFromResource(char *name)
 	// make the texture name all lower case
 	texturename = name;
 	char* tempName = _strdup(name);
-	_strlwr_s(tempName, strlen(name));
+	_strlwr_s(tempName, strlen(name) + 1);
 
 	// check the file extension to see what type of texture
 	if(strstr(tempName, ".bmp"))

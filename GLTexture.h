@@ -61,7 +61,6 @@ public:
 	void Load(char *name);							// Load the texture
 	GLTexture();									// Constructor
 	virtual ~GLTexture();							// Destructor
-
 };
 
 #endif GLTEXTURE_H
